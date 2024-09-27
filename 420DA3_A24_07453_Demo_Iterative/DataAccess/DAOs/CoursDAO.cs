@@ -1,8 +1,4 @@
-﻿using _420DA3_Demo_Iterative.Business.Domain;
-using Microsoft.Data.SqlClient;
-using System.Data;
-
-namespace _420DA3_Demo_Iterative.DataAccess.DAOs;
+﻿namespace _420DA3_Demo_Iterative.DataAccess.DAOs;
 internal class CoursDAO {
     public const string DB_TABLE_NAME = "Cours";
     public const string COURS_ETUDIANT_PIVOT_TABLE = "CoursEtudiants";
@@ -10,6 +6,7 @@ internal class CoursDAO {
     public CoursDAO() { }
 
 
+    /*
 
     public Cours Create(Cours initialDto, SqlTransaction? transaction = null) {
         string query = $"INSERT INTO {DB_TABLE_NAME} (CodeCours, Titre) VALUES (@codeCours, @titre); SELECT SCOPE_IDENTITY();";
@@ -195,4 +192,6 @@ internal class CoursDAO {
         return resultats;
 
     }
+    */
+
 }

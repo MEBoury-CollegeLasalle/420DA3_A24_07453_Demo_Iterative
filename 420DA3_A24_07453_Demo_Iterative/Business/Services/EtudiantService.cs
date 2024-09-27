@@ -1,14 +1,34 @@
-﻿using _420DA3_Demo_Iterative.Business.Domain;
-using _420DA3_Demo_Iterative.DataAccess.DAOs;
+﻿using _420DA3_Demo_Iterative.DataAccess.DAOs;
+using _420DA3_Demo_Iterative.Presentation.Views;
+using System.Data;
 
 namespace _420DA3_Demo_Iterative.Business.Services;
 internal class EtudiantService {
     private EtudiantDAO etudiantDAO;
+    private EtudiantView etudiantWindow;
 
     public EtudiantService() {
         this.etudiantDAO = new EtudiantDAO();
+        this.etudiantWindow = new EtudiantView();
     }
 
+    public void OpenEtudiantWindow() {
+        this.etudiantWindow.ShowDialog();
+    }
+
+    public DataTable GetEtudiantDataTable() {
+        return this.etudiantDAO.GetDataTable();
+    }
+
+    public void SaveChanges() {
+        this.etudiantDAO.SaveChanges();
+    }
+
+    public void ReloadTableData() {
+        this.etudiantDAO.LoadDataTable();
+    }
+
+    /*
     public Etudiant CreerEtudiant(string nom, string prenom, string codePermanent, DateTime dateEnregistrement) {
         Etudiant etudiant = new Etudiant(nom, prenom, codePermanent, dateEnregistrement);
         return this.etudiantDAO.Create(etudiant);
@@ -29,5 +49,5 @@ internal class EtudiantService {
     public List<Etudiant> GetByCoursId(int coursId) {
         return this.etudiantDAO.GetByCoursId(coursId);
     }
-
+    */
 }

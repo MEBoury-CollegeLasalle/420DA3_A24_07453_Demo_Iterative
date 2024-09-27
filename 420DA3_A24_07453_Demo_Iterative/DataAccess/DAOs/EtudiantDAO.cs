@@ -1,5 +1,4 @@
-﻿using _420DA3_Demo_Iterative.Business.Domain;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
 
 namespace _420DA3_Demo_Iterative.DataAccess.DAOs;
@@ -7,8 +6,79 @@ internal class EtudiantDAO {
     public const string DB_TABLE_NAME = "Etudiants";
     public const string COURS_ETUDIANT_PIVOT_TABLE = "CoursEtudiants";
 
-    public EtudiantDAO() { }
+    private DataTable table;
+    private SqlConnection connection;
+    private SqlDataAdapter dataAdapter;
 
+    public EtudiantDAO() {
+        this.connection = SqlServerConnectionProvider.GetConnection();
+        this.table = new DataTable(DB_TABLE_NAME);
+        this.dataAdapter = this.CreateDataAdapter();
+    }
+
+    private SqlDataAdapter CreateDataAdapter() {
+
+        SqlDataAdapter adapter = new SqlDataAdapter();
+
+        SqlCommand selectCommand = this.connection.CreateCommand();
+        selectCommand.CommandText = $"SELECT * FROM {DB_TABLE_NAME};";
+
+        SqlCommand insertCommand = this.connection.CreateCommand();
+        insertCommand.CommandText = $"INSERT INTO {DB_TABLE_NAME} " +
+            $"(Nom, Prenom, CodePermanent, DateEnregistrement) " +
+            $"VALUES (@nom, @prenom, @codePermanent, @dateEnregistrement);";
+
+        insertCommand.Parameters.Add("@nom", SqlDbType.NVarChar, 64, "Nom");
+        insertCommand.Parameters.Add("@prenom", SqlDbType.NVarChar, 64, "Prenom");
+        insertCommand.Parameters.Add("@codePermanent", SqlDbType.NVarChar, 12, "CodePermanent");
+        insertCommand.Parameters.Add("@dateEnregistrement", SqlDbType.DateTime2, 7, "DateEnregistrement");
+
+        SqlCommand updateCommand = this.connection.CreateCommand();
+        updateCommand.CommandText = $"UPDATE {DB_TABLE_NAME} " +
+        $"SET Nom = @nom, " +
+        $"Prenom = @prenom, " +
+        $"CodePermanent = @codePermanent, " +
+        $"DateEnregistrement = @dateEnregistrement " +
+        $"WHERE Id = @id;";
+
+        updateCommand.Parameters.Add("@nom", SqlDbType.NVarChar, 64, "Nom");
+        updateCommand.Parameters.Add("@prenom", SqlDbType.NVarChar, 64, "Prenom");
+        updateCommand.Parameters.Add("@codePermanent", SqlDbType.NVarChar, 12, "CodePermanent");
+        updateCommand.Parameters.Add("@dateEnregistrement", SqlDbType.DateTime2, 7, "DateEnregistrement");
+        updateCommand.Parameters.Add("@id", SqlDbType.Int, 4, "Id");
+
+        SqlCommand deleteCommand = this.connection.CreateCommand();
+        deleteCommand.CommandText = $"DELETE FROM {DB_TABLE_NAME} WHERE Id = @id;";
+        deleteCommand.Parameters.Add("@id", SqlDbType.Int, 4, "Id");
+
+        adapter.SelectCommand = selectCommand;
+        adapter.UpdateCommand = updateCommand;
+        adapter.DeleteCommand = deleteCommand;
+        adapter.InsertCommand = insertCommand;
+
+        return adapter;
+
+    }
+
+    public DataTable GetDataTable() {
+        return this.table;
+    }
+
+    public void LoadDataTable() {
+        this.table.Clear();
+        this.dataAdapter.Fill(this.table);
+    }
+
+    public void SaveChanges() {
+        if (this.connection.State != ConnectionState.Open) {
+            this.connection.Open();
+        }
+        this.dataAdapter.Update(this.table);
+    }
+
+
+
+    /*
     public Etudiant Create(Etudiant initialDto, SqlTransaction? transaction = null) {
         SqlConnection conn = transaction?.Connection ?? SqlServerConnectionProvider.GetConnection();
         SqlCommand cmd = conn.CreateCommand();
@@ -220,4 +290,5 @@ internal class EtudiantDAO {
         return resultats;
 
     }
+    */
 }
