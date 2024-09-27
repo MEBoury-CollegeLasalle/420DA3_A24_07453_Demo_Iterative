@@ -1,7 +1,7 @@
 ﻿using _420DA3_Demo_Iterative.DataAccess.DAOs;
 
 namespace _420DA3_Demo_Iterative.Business.Services;
-internal class CoursService {
+public class CoursService {
     private CoursDAO coursesDAO;
 
     public CoursService() {

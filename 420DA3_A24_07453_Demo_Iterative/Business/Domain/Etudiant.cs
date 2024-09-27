@@ -1,6 +1,4 @@
-﻿using _420DA3_Demo_Iterative.Business.Services;
-
-namespace _420DA3_Demo_Iterative.Business.Domain;
+﻿namespace _420DA3_Demo_Iterative.Business.Domain;
 public class Etudiant {
     public const int MAX_LENGTH_NOM = 64;
     public const int MAX_LENGTH_PRENOM = 64;
@@ -44,7 +42,7 @@ public class Etudiant {
     public DateTime? DateCreation { get; set; }
     public DateTime? DateModification { get; set; }
     public DateTime? DateSuppression { get; set; }
-
+    /*
     public List<Cours> Cours {
         get {
             if (this.cours.Count == 0) {
@@ -56,6 +54,7 @@ public class Etudiant {
             this.cours = value;
         }
     }
+    */
 
 
     public Etudiant(string nom, string prenom, string codePermanent, DateTime dateEnregistrement) {

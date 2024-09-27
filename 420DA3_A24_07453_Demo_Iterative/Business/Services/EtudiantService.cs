@@ -3,13 +3,13 @@ using _420DA3_Demo_Iterative.Presentation.Views;
 using System.Data;
 
 namespace _420DA3_Demo_Iterative.Business.Services;
-internal class EtudiantService {
+public class EtudiantService {
     private EtudiantDAO etudiantDAO;
     private EtudiantView etudiantWindow;
 
     public EtudiantService() {
         this.etudiantDAO = new EtudiantDAO();
-        this.etudiantWindow = new EtudiantView();
+        this.etudiantWindow = new EtudiantView(this);
     }
 
     public void OpenEtudiantWindow() {
