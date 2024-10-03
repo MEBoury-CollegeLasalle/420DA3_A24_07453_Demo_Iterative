@@ -3,7 +3,7 @@
 namespace _420DA3_Demo_Iterative.DataAccess;
 internal class SqlServerConnectionProvider {
     private readonly static string instanceName = "SQL2022DEV";
-    private readonly static string databaseName = "420da3_demo_iterative";
+    private readonly static string databaseName = "420da3_07453_demo_iterative";
 
     private static SqlConnection? connection;
 
