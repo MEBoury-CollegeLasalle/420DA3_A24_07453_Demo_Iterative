@@ -4,8 +4,8 @@ using System.Data;
 
 namespace _420DA3_Demo_Iterative.Business.Services;
 public class EtudiantService {
-    private EtudiantDAO etudiantDAO;
-    private EtudiantView etudiantWindow;
+    private readonly EtudiantDAO etudiantDAO;
+    private readonly EtudiantView etudiantWindow;
 
     public EtudiantService() {
         this.etudiantDAO = new EtudiantDAO();
@@ -13,7 +13,7 @@ public class EtudiantService {
     }
 
     public void OpenEtudiantWindow() {
-        this.etudiantWindow.ShowDialog();
+        _ = this.etudiantWindow.ShowDialog();
     }
 
     public DataTable GetEtudiantDataTable() {

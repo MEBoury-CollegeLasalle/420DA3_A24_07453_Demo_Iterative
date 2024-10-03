@@ -2,7 +2,7 @@
 
 namespace _420DA3_Demo_Iterative.Presentation.Views;
 public partial class EtudiantView : Form {
-    private EtudiantService service;
+    private readonly EtudiantService service;
 
     public EtudiantView(EtudiantService service) {
         this.service = service;

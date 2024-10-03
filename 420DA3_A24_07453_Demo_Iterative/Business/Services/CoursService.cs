@@ -4,8 +4,8 @@ using System.Data;
 
 namespace _420DA3_Demo_Iterative.Business.Services;
 public class CoursService {
-    private CoursDAO coursesDAO;
-    private CoursView coursView;
+    private readonly CoursDAO coursesDAO;
+    private readonly CoursView coursView;
 
     public CoursService() {
         this.coursesDAO = new CoursDAO();

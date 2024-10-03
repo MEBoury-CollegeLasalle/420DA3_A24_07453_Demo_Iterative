@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace _420DA3_Demo_Iterative.Presentation.Views;
 public partial class CoursView : Form {
-    private CoursService service;
+    private readonly CoursService service;
 
     public CoursView(CoursService service) {
         this.service = service;

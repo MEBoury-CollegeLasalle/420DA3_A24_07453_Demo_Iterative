@@ -3,8 +3,8 @@ public class Cours {
     public const int MAX_LENGTH_COURSECODE = 12;
     public const int MAX_LENGTH_TITLE = 128;
 
-    private string codeCours;
-    private string titre;
+    private string codeCours = null!;
+    private string titre = null!;
 
     public int Id { get; set; }
     public string CodeCours {

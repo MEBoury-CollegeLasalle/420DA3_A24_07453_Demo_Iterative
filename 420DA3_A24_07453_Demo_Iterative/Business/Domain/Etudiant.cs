@@ -4,10 +4,9 @@ public class Etudiant {
     public const int MAX_LENGTH_PRENOM = 64;
     public const int MAX_LENGTH_CP = 12;
 
-    private string nom;
-    private string prenom;
-    private string codePermanent;
-    private List<Cours> cours = new List<Cours>();
+    private string nom = null!;
+    private string prenom = null!;
+    private string codePermanent = null!;
 
     public int Id { get; set; }
     public string Nom {

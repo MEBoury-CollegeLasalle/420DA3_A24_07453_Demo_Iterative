@@ -6,9 +6,9 @@ internal class EtudiantDAO {
     public const string DB_TABLE_NAME = "Etudiants";
     public const string COURS_ETUDIANT_PIVOT_TABLE = "CoursEtudiants";
 
-    private DataTable table;
-    private SqlConnection connection;
-    private SqlDataAdapter dataAdapter;
+    private readonly DataTable table;
+    private readonly SqlConnection connection;
+    private readonly SqlDataAdapter dataAdapter;
 
     public EtudiantDAO() {
         this.connection = SqlServerConnectionProvider.GetConnection();
@@ -28,10 +28,10 @@ internal class EtudiantDAO {
             $"(Nom, Prenom, CodePermanent, DateEnregistrement) " +
             $"VALUES (@nom, @prenom, @codePermanent, @dateEnregistrement);";
 
-        insertCommand.Parameters.Add("@nom", SqlDbType.NVarChar, 64, "Nom");
-        insertCommand.Parameters.Add("@prenom", SqlDbType.NVarChar, 64, "Prenom");
-        insertCommand.Parameters.Add("@codePermanent", SqlDbType.NVarChar, 12, "CodePermanent");
-        insertCommand.Parameters.Add("@dateEnregistrement", SqlDbType.DateTime2, 7, "DateEnregistrement");
+        _ = insertCommand.Parameters.Add("@nom", SqlDbType.NVarChar, 64, "Nom");
+        _ = insertCommand.Parameters.Add("@prenom", SqlDbType.NVarChar, 64, "Prenom");
+        _ = insertCommand.Parameters.Add("@codePermanent", SqlDbType.NVarChar, 12, "CodePermanent");
+        _ = insertCommand.Parameters.Add("@dateEnregistrement", SqlDbType.DateTime2, 7, "DateEnregistrement");
 
         SqlCommand updateCommand = this.connection.CreateCommand();
         updateCommand.CommandText = $"UPDATE {DB_TABLE_NAME} " +
@@ -41,15 +41,15 @@ internal class EtudiantDAO {
         $"DateEnregistrement = @dateEnregistrement " +
         $"WHERE Id = @id;";
 
-        updateCommand.Parameters.Add("@nom", SqlDbType.NVarChar, 64, "Nom");
-        updateCommand.Parameters.Add("@prenom", SqlDbType.NVarChar, 64, "Prenom");
-        updateCommand.Parameters.Add("@codePermanent", SqlDbType.NVarChar, 12, "CodePermanent");
-        updateCommand.Parameters.Add("@dateEnregistrement", SqlDbType.DateTime2, 7, "DateEnregistrement");
-        updateCommand.Parameters.Add("@id", SqlDbType.Int, 4, "Id");
+        _ = updateCommand.Parameters.Add("@nom", SqlDbType.NVarChar, 64, "Nom");
+        _ = updateCommand.Parameters.Add("@prenom", SqlDbType.NVarChar, 64, "Prenom");
+        _ = updateCommand.Parameters.Add("@codePermanent", SqlDbType.NVarChar, 12, "CodePermanent");
+        _ = updateCommand.Parameters.Add("@dateEnregistrement", SqlDbType.DateTime2, 7, "DateEnregistrement");
+        _ = updateCommand.Parameters.Add("@id", SqlDbType.Int, 4, "Id");
 
         SqlCommand deleteCommand = this.connection.CreateCommand();
         deleteCommand.CommandText = $"DELETE FROM {DB_TABLE_NAME} WHERE Id = @id;";
-        deleteCommand.Parameters.Add("@id", SqlDbType.Int, 4, "Id");
+        _ = deleteCommand.Parameters.Add("@id", SqlDbType.Int, 4, "Id");
 
         adapter.SelectCommand = selectCommand;
         adapter.UpdateCommand = updateCommand;
@@ -66,14 +66,14 @@ internal class EtudiantDAO {
 
     public void LoadDataTable() {
         this.table.Clear();
-        this.dataAdapter.Fill(this.table);
+        _ = this.dataAdapter.Fill(this.table);
     }
 
     public void SaveChanges() {
         if (this.connection.State != ConnectionState.Open) {
             this.connection.Open();
         }
-        this.dataAdapter.Update(this.table);
+        _ = this.dataAdapter.Update(this.table);
     }
 
 

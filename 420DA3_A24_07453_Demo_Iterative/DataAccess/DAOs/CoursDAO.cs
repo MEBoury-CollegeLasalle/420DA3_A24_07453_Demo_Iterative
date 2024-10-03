@@ -7,9 +7,9 @@ internal class CoursDAO {
     public const string DB_TABLE_NAME = "Cours";
     public const string COURS_ETUDIANT_PIVOT_TABLE = "CoursEtudiants";
 
-    private DataTable table;
-    private SqlConnection connection;
-    private SqlDataAdapter dataAdapter;
+    private readonly DataTable table;
+    private readonly SqlConnection connection;
+    private readonly SqlDataAdapter dataAdapter;
 
     public CoursDAO() {
         this.connection = SqlServerConnectionProvider.GetConnection();
