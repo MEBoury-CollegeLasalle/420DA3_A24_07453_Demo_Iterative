@@ -1,11 +1,12 @@
 ﻿using _420DA3_Demo_Iterative.Business.Services;
+using _420DA3_Demo_Iterative.DataAccess;
 using _420DA3_Demo_Iterative.Presentation;
 
 namespace _420DA3_Demo_Iterative.Business;
 public class App {
     public EtudiantService EtudiantService { get; set; }
     public CoursService CoursService { get; set; }
-    private MainMenu mainMenu;
+    private readonly MainMenu mainMenu;
 
     public App() {
         ApplicationConfiguration.Initialize();
@@ -19,6 +20,7 @@ public class App {
     }
 
     public void Stop() {
+        SqlServerConnectionProvider.CloseConnection();
         Application.Exit();
     }
 }
