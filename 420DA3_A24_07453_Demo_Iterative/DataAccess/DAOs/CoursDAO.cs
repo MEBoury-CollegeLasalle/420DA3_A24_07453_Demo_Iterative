@@ -1,9 +1,79 @@
-﻿namespace _420DA3_Demo_Iterative.DataAccess.DAOs;
+﻿using _420DA3_Demo_Iterative.Business.Domain;
+using Microsoft.Data.SqlClient;
+using System.Data;
+
+namespace _420DA3_Demo_Iterative.DataAccess.DAOs;
 internal class CoursDAO {
     public const string DB_TABLE_NAME = "Cours";
     public const string COURS_ETUDIANT_PIVOT_TABLE = "CoursEtudiants";
 
-    public CoursDAO() { }
+    private readonly DataTable table;
+    private readonly SqlConnection connection;
+    private readonly SqlDataAdapter dataAdapter;
+
+    public CoursDAO() {
+        this.connection = SqlServerConnectionProvider.GetConnection();
+        this.table = new DataTable(DB_TABLE_NAME);
+        this.dataAdapter = this.CreateDataAdapter();
+    }
+
+    private SqlDataAdapter CreateDataAdapter() {
+
+        SqlDataAdapter adapter = new SqlDataAdapter();
+
+        SqlCommand selectCommand = this.connection.CreateCommand();
+        selectCommand.CommandText = $"SELECT * FROM {DB_TABLE_NAME};";
+
+        SqlCommand insertCommand = this.connection.CreateCommand();
+        insertCommand.CommandText = $"INSERT INTO {DB_TABLE_NAME} " +
+            $"(CodeCours, Titre) " +
+            $"VALUES (@codeCours, @titre);";
+
+        _ = insertCommand.Parameters.Add("@codeCours", SqlDbType.NVarChar, Cours.MAX_LENGTH_COURSECODE, "CodeCours");
+        _ = insertCommand.Parameters.Add("@titre", SqlDbType.NVarChar, Cours.MAX_LENGTH_TITLE, "Titre");
+
+        SqlCommand updateCommand = this.connection.CreateCommand();
+        updateCommand.CommandText = $"UPDATE {DB_TABLE_NAME} " +
+        $"SET CodeCours = @codeCours, " +
+        $"Titre = @titre " +
+        $"WHERE Id = @id " +
+        $"AND CodeCours = @oldCodeCours " +
+        $"AND Titre = @oldTitre;";
+
+        _ = updateCommand.Parameters.Add("@codeCours", SqlDbType.NVarChar, Cours.MAX_LENGTH_COURSECODE, "CodeCours");
+        _ = updateCommand.Parameters.Add("@titre", SqlDbType.NVarChar, Cours.MAX_LENGTH_TITLE, "Titre");
+        _ = updateCommand.Parameters.Add("@id", SqlDbType.Int, 4, "Id");
+        updateCommand.Parameters.Add("@oldCodeCours", SqlDbType.NVarChar, Cours.MAX_LENGTH_COURSECODE, "CodeCours").SourceVersion = DataRowVersion.Original;
+        updateCommand.Parameters.Add("@oldTitre", SqlDbType.NVarChar, Cours.MAX_LENGTH_TITLE, "Titre").SourceVersion = DataRowVersion.Original;
+
+        SqlCommand deleteCommand = this.connection.CreateCommand();
+        deleteCommand.CommandText = $"DELETE FROM {DB_TABLE_NAME} WHERE Id = @id;";
+        _ = deleteCommand.Parameters.Add("@id", SqlDbType.Int, 4, "Id");
+
+        adapter.SelectCommand = selectCommand;
+        adapter.UpdateCommand = updateCommand;
+        adapter.DeleteCommand = deleteCommand;
+        adapter.InsertCommand = insertCommand;
+
+        return adapter;
+
+    }
+
+    public DataTable GetDataTable() {
+        return this.table;
+    }
+
+    public void LoadDataTable() {
+        this.table.Clear();
+        _ = this.dataAdapter.Fill(this.table);
+    }
+
+    public void SaveChanges() {
+        if (this.connection.State != ConnectionState.Open) {
+            this.connection.Open();
+        }
+        _ = this.dataAdapter.Update(this.table);
+    }
 
 
     /*
