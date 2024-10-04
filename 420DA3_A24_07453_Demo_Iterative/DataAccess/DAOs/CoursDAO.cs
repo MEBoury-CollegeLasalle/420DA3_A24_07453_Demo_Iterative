@@ -36,11 +36,15 @@ internal class CoursDAO {
         updateCommand.CommandText = $"UPDATE {DB_TABLE_NAME} " +
         $"SET CodeCours = @codeCours, " +
         $"Titre = @titre " +
-        $"WHERE Id = @id;";
+        $"WHERE Id = @id " +
+        $"AND CodeCours = @oldCodeCours " +
+        $"AND Titre = @oldTitre;";
 
         _ = updateCommand.Parameters.Add("@codeCours", SqlDbType.NVarChar, Cours.MAX_LENGTH_COURSECODE, "CodeCours");
         _ = updateCommand.Parameters.Add("@titre", SqlDbType.NVarChar, Cours.MAX_LENGTH_TITLE, "Titre");
         _ = updateCommand.Parameters.Add("@id", SqlDbType.Int, 4, "Id");
+        updateCommand.Parameters.Add("@oldCodeCours", SqlDbType.NVarChar, Cours.MAX_LENGTH_COURSECODE, "CodeCours").SourceVersion = DataRowVersion.Original;
+        updateCommand.Parameters.Add("@oldTitre", SqlDbType.NVarChar, Cours.MAX_LENGTH_TITLE, "Titre").SourceVersion = DataRowVersion.Original;
 
         SqlCommand deleteCommand = this.connection.CreateCommand();
         deleteCommand.CommandText = $"DELETE FROM {DB_TABLE_NAME} WHERE Id = @id;";
