@@ -39,13 +39,21 @@ internal class EtudiantDAO {
         $"Prenom = @prenom, " +
         $"CodePermanent = @codePermanent, " +
         $"DateEnregistrement = @dateEnregistrement " +
-        $"WHERE Id = @id;";
+        $"WHERE Id = @id " +
+        $"AND Nom = @oldNom " +
+        $"AND Prenom = @oldPrenom " +
+        $"AND CodePermanent = @oldCodePermanent " +
+        $"AND DateEnregistrement = @oldDateEnregistrement;";
 
         updateCommand.Parameters.Add("@nom", SqlDbType.NVarChar, 64, "Nom");
         updateCommand.Parameters.Add("@prenom", SqlDbType.NVarChar, 64, "Prenom");
         updateCommand.Parameters.Add("@codePermanent", SqlDbType.NVarChar, 12, "CodePermanent");
         updateCommand.Parameters.Add("@dateEnregistrement", SqlDbType.DateTime2, 7, "DateEnregistrement");
         updateCommand.Parameters.Add("@id", SqlDbType.Int, 4, "Id");
+        updateCommand.Parameters.Add("@oldNom", SqlDbType.NVarChar, 64, "Nom").SourceVersion = DataRowVersion.Original;
+        updateCommand.Parameters.Add("@oldPrenom", SqlDbType.NVarChar, 64, "Prenom").SourceVersion = DataRowVersion.Original;
+        updateCommand.Parameters.Add("@oldCodePermanent", SqlDbType.NVarChar, 12, "CodePermanent").SourceVersion = DataRowVersion.Original;
+        updateCommand.Parameters.Add("@oldDateEnregistrement", SqlDbType.DateTime2, 7, "DateEnregistrement").SourceVersion = DataRowVersion.Original;
 
         SqlCommand deleteCommand = this.connection.CreateCommand();
         deleteCommand.CommandText = $"DELETE FROM {DB_TABLE_NAME} WHERE Id = @id;";
