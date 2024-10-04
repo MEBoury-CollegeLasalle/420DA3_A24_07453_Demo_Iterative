@@ -26,7 +26,9 @@ internal class EtudiantDAO {
         SqlCommand insertCommand = this.connection.CreateCommand();
         insertCommand.CommandText = $"INSERT INTO {DB_TABLE_NAME} " +
             $"(Nom, Prenom, CodePermanent, DateEnregistrement) " +
-            $"VALUES (@nom, @prenom, @codePermanent, @dateEnregistrement);";
+            $"VALUES (@nom, @prenom, @codePermanent, @dateEnregistrement); " +
+            $"SELECT * FROM {DB_TABLE_NAME} WHERE Id = SCOPE_IDENTITY();";
+        insertCommand.UpdatedRowSource = UpdateRowSource.FirstReturnedRecord;
 
         _ = insertCommand.Parameters.Add("@nom", SqlDbType.NVarChar, 64, "Nom");
         _ = insertCommand.Parameters.Add("@prenom", SqlDbType.NVarChar, 64, "Prenom");
@@ -38,6 +40,7 @@ internal class EtudiantDAO {
         $"SET Nom = @nom, " +
         $"Prenom = @prenom, " +
         $"CodePermanent = @codePermanent, " +
+        $"DateModification = @dateModification, " +
         $"DateEnregistrement = @dateEnregistrement " +
         $"WHERE Id = @id " +
         $"AND Nom = @oldNom " +
@@ -75,6 +78,30 @@ internal class EtudiantDAO {
     public void LoadDataTable() {
         this.table.Clear();
         _ = this.dataAdapter.Fill(this.table);
+        DataColumn idColumn = this.table.Columns["Id"] ?? throw new Exception("La colonne 'Id' n'existe pas.");
+        DataColumn nomColumn = this.table.Columns["Nom"] ?? throw new Exception("La colonne 'Nom' n'existe pas.");
+        DataColumn prenomColumn = this.table.Columns["Prenom"] ?? throw new Exception("La colonne 'Prenom' n'existe pas.");
+        DataColumn codePermColumn = this.table.Columns["CodePermanent"] ?? throw new Exception("La colonne 'CodePermanent' n'existe pas.");
+        DataColumn dateCreationColumn = this.table.Columns["DateCreation"] ?? throw new Exception("La colonne 'DateCreation' n'existe pas.");
+        DataColumn dateModifColumn = this.table.Columns["DateModification"] ?? throw new Exception("La colonne 'DateModification' n'existe pas.");
+        DataColumn dateSuppressColumn = this.table.Columns["DateSuppression"] ?? throw new Exception("La colonne 'DateSuppression' n'existe pas.");
+
+        this.table.PrimaryKey = new DataColumn[1] { idColumn };
+        idColumn.AutoIncrement = true;
+        idColumn.AutoIncrementSeed = -1;
+        idColumn.AutoIncrementStep = -1;
+        idColumn.ReadOnly = true;
+
+        nomColumn.MaxLength = 64;
+        prenomColumn.MaxLength = 64;
+        codePermColumn.MaxLength = 12;
+
+        dateCreationColumn.ReadOnly = true;
+        dateCreationColumn.AllowDBNull = true;
+        dateModifColumn.ReadOnly = true;
+        dateModifColumn.AllowDBNull = true;
+        dateSuppressColumn.ReadOnly = true;
+        dateSuppressColumn.AllowDBNull = true;
     }
 
     public void SaveChanges() {
@@ -82,8 +109,8 @@ internal class EtudiantDAO {
             this.connection.Open();
         }
         _ = this.dataAdapter.Update(this.table);
-    }
 
+    }
 
 
     /*

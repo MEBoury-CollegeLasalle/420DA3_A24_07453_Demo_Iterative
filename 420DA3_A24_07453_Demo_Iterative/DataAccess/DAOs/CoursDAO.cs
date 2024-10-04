@@ -27,7 +27,9 @@ internal class CoursDAO {
         SqlCommand insertCommand = this.connection.CreateCommand();
         insertCommand.CommandText = $"INSERT INTO {DB_TABLE_NAME} " +
             $"(CodeCours, Titre) " +
-            $"VALUES (@codeCours, @titre);";
+            $"VALUES (@codeCours, @titre); " +
+            $"SELECT * FROM {DB_TABLE_NAME} WHERE Id = SCOPE_IDENTITY();";
+        insertCommand.UpdatedRowSource = UpdateRowSource.FirstReturnedRecord;
 
         _ = insertCommand.Parameters.Add("@codeCours", SqlDbType.NVarChar, Cours.MAX_LENGTH_COURSECODE, "CodeCours");
         _ = insertCommand.Parameters.Add("@titre", SqlDbType.NVarChar, Cours.MAX_LENGTH_TITLE, "Titre");
@@ -66,6 +68,28 @@ internal class CoursDAO {
     public void LoadDataTable() {
         this.table.Clear();
         _ = this.dataAdapter.Fill(this.table);
+        DataColumn idColumn = this.table.Columns["Id"] ?? throw new Exception("La colonne 'Id' n'existe pas.");
+        DataColumn codeCoursColumn = this.table.Columns["CodeCours"] ?? throw new Exception("La colonne 'CodeCours' n'existe pas.");
+        DataColumn titreColumn = this.table.Columns["Titre"] ?? throw new Exception("La colonne 'Titre' n'existe pas.");
+        DataColumn dateCreationColumn = this.table.Columns["DateCreation"] ?? throw new Exception("La colonne 'DateCreation' n'existe pas.");
+        DataColumn dateModifColumn = this.table.Columns["DateModification"] ?? throw new Exception("La colonne 'DateModification' n'existe pas.");
+        DataColumn dateSuppressColumn = this.table.Columns["DateSuppression"] ?? throw new Exception("La colonne 'DateSuppression' n'existe pas.");
+
+        this.table.PrimaryKey = new DataColumn[1] { idColumn };
+        idColumn.AutoIncrement = true;
+        idColumn.AutoIncrementSeed = -1;
+        idColumn.AutoIncrementStep = -1;
+        idColumn.ReadOnly = true;
+
+        codeCoursColumn.MaxLength = 12;
+        titreColumn.MaxLength = 128;
+
+        dateCreationColumn.ReadOnly = true;
+        dateCreationColumn.AllowDBNull = true;
+        dateModifColumn.ReadOnly = true;
+        dateModifColumn.AllowDBNull = true;
+        dateSuppressColumn.ReadOnly = true;
+        dateSuppressColumn.AllowDBNull = true;
     }
 
     public void SaveChanges() {
