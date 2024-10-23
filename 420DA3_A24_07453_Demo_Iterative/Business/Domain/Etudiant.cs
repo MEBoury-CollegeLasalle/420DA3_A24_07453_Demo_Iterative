@@ -1,4 +1,10 @@
-﻿namespace _420DA3_Demo_Iterative.Business.Domain;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace _420DA3_Demo_Iterative.Business.Domain;
+
+[Table("Students", Schema = "dbo")]
 public class Etudiant {
     public const int MAX_LENGTH_NOM = 64;
     public const int MAX_LENGTH_PRENOM = 64;
@@ -8,7 +14,16 @@ public class Etudiant {
     private string prenom = null!;
     private string codePermanent = null!;
 
+    [Key]
+    [Column(nameof(Id), TypeName = "int", Order = 0)]
     public int Id { get; set; }
+
+    [Column(nameof(CoursId), TypeName = "int", Order = 1)]
+    public int? CoursId { get; set; }
+
+    [Column(nameof(Nom), Order = 2)]
+    [MaxLength(MAX_LENGTH_NOM)]
+    [Required]
     public string Nom {
         get { return this.nom; }
         set {
@@ -18,6 +33,10 @@ public class Etudiant {
             this.nom = value;
         }
     }
+
+    [Column(nameof(Prenom), Order = 3)]
+    [MaxLength(MAX_LENGTH_PRENOM)]
+    [Required]
     public string Prenom {
         get { return this.prenom; }
         set {
@@ -27,6 +46,10 @@ public class Etudiant {
             this.prenom = value;
         }
     }
+
+    [Column(nameof(CodePermanent), Order = 4)]
+    [MaxLength(MAX_LENGTH_CP)]
+    [Required]
     public string CodePermanent {
         get { return this.codePermanent; }
         set {
@@ -36,24 +59,33 @@ public class Etudiant {
             this.codePermanent = value;
         }
     }
+
+    [Column(nameof(DateEnregistrement), TypeName = "datetime2(7)", Order = 5)]
+    [Precision(7)]
+    [Required]
     public DateTime DateEnregistrement { get; set; }
 
+
+    [Column(nameof(DateCreation), TypeName = "datetime2(7)", Order = 6)]
+    [Precision(7)]
+    [Required]
+    [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime? DateCreation { get; set; }
+
+    [Column(nameof(DateModification), TypeName = "datetime2", Order = 7)]
+    [Precision(7)]
     public DateTime? DateModification { get; set; }
+
+    [Column(nameof(DateSuppression), TypeName = "datetime2", Order = 8)]
+    [Precision(7)]
     public DateTime? DateSuppression { get; set; }
-    /*
-    public List<Cours> Cours {
-        get {
-            if (this.cours.Count == 0) {
-                this.cours = new CoursService().GetByEtudiantId(this.Id);
-            }
-            return this.cours;
-        }
-        set {
-            this.cours = value;
-        }
-    }
-    */
+
+    [Column(nameof(RowVersion), Order = 9)]
+    [Timestamp]
+    public byte[] RowVersion { get; set; }
+
+    [ForeignKey(nameof(CoursId)), DeleteBehavior(DeleteBehavior.SetNull)]
+    public Cours? CoursInscrit { get; set; }
 
 
     public Etudiant(string nom, string prenom, string codePermanent, DateTime dateEnregistrement) {
